@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_vendor_bridge_vendor_user,vendor.bridge.vendor.user,model_vendor_bridge_vendor,group_vendor_bridge_user,1,1,1,0
+access_vendor_bridge_vendor_manager,vendor.bridge.vendor.manager,model_vendor_bridge_vendor,group_vendor_bridge_manager,1,1,1,1
+access_vendor_bridge_rfq_user,vendor.bridge.rfq.user,model_vendor_bridge_rfq,group_vendor_bridge_user,1,1,1,0
+access_vendor_bridge_rfq_manager,vendor.bridge.rfq.manager,model_vendor_bridge_rfq,group_vendor_bridge_manager,1,1,1,1
+access_vendor_bridge_quotation_user,vendor.bridge.quotation.user,model_vendor_bridge_quotation,group_vendor_bridge_user,1,1,1,0
+access_vendor_bridge_quotation_manager,vendor.bridge.quotation.manager,model_vendor_bridge_quotation,group_vendor_bridge_manager,1,1,1,1
+access_vendor_bridge_po_user,vendor.bridge.po.user,model_vendor_bridge_po,group_vendor_bridge_user,1,1,1,0
+access_vendor_bridge_po_manager,vendor.bridge.po.manager,model_vendor_bridge_po,group_vendor_bridge_manager,1,1,1,1
