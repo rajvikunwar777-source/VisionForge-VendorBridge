@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_vendor_bridge_root"
+              name="VendorBridge"
+              sequence="10"/>
+
+    <!-- Main Section Menu -->
+    <menuitem id="menu_vendor_bridge_procurement"
+              name="Procurement &amp; Vendors"
+              parent="menu_vendor_bridge_root"
+              sequence="10"/>
+
+    <!-- Action Menus -->
+    <menuitem id="menu_vendor_bridge_vendors"
+              name="Vendors"
+              parent="menu_vendor_bridge_procurement"
+              action="action_vendor_bridge_vendor"
+              sequence="10"/>
+
+    <menuitem id="menu_vendor_bridge_rfqs"
+              name="Requests for Quotation"
+              parent="menu_vendor_bridge_procurement"
+              action="action_vendor_bridge_rfq"
+              sequence="20"/>
+
+    <menuitem id="menu_vendor_bridge_quotations"
+              name="Vendor Quotations"
+              parent="menu_vendor_bridge_procurement"
+              action="action_vendor_bridge_quotation"
+              sequence="30"/>
+
+    <menuitem id="menu_vendor_bridge_pos"
+              name="Purchase Orders"
+              parent="menu_vendor_bridge_procurement"
+              action="action_vendor_bridge_po"
+              sequence="40"/>
+</odoo>
