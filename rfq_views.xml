@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_vendor_bridge_rfq_tree" model="ir.ui.view">
+        <field name="name">vendor.bridge.rfq.tree</field>
+        <field name="model">vendor.bridge.rfq</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-warning="state == 'to_approve'" decoration-success="state in ('approved', 'done')">
+                <field name="name"/>
+                <field name="rfq_date"/>
+                <field name="delivery_date"/>
+                <field name="product_name"/>
+                <field name="quantity"/>
+                <field name="unit"/>
+                <field name="priority" widget="priority"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'draft'" 
+                       decoration-warning="state == 'to_approve'" 
+                       decoration-success="state in ('approved', 'done')" 
+                       decoration-danger="state == 'rejected'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_vendor_bridge_rfq_form" model="ir.ui.view">
+        <field name="name">vendor.bridge.rfq.form</field>
+        <field name="model">vendor.bridge.rfq</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_approval" string="Submit for Approval" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    
+                    <!-- Approver actions: Restricted to Manager group -->
+                    <button name="action_approve" string="Approve" type="object" class="btn-success" invisible="state != 'to_approve'" groups="vendor_bridge.group_vendor_bridge_manager"/>
+                    <button name="action_reject" string="Reject" type="object" class="btn-danger" invisible="state != 'to_approve'" groups="vendor_bridge.group_vendor_bridge_manager"/>
+                    
+                    <button name="action_send_rfq" string="Send RFQ to Vendors" type="object" class="oe_highlight" invisible="state != 'approved'"/>
+                    <button name="action_set_draft" string="Reset to Draft" type="object" invisible="state not in ('rejected', 'cancel')"/>
+                    <button name="action_cancel" string="Cancel RFQ" type="object" invisible="state not in ('draft', 'to_approve', 'approved')"/>
+                    
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,approved,sent,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_quotations" type="object" class="oe_stat_button" icon="fa-pencil-square-o">
+                            <field name="quotation_count" widget="statinfo" string="Quotations"/>
+                        </button>
+                        <button name="action_view_pos" type="object" class="oe_stat_button" icon="fa-shopping-cart">
+                            <field name="po_count" widget="statinfo" string="POs"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <span class="o_form_label">RFQ Reference</span>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Product Specifications">
+                            <field name="product_name" placeholder="Item name or service..." readonly="state != 'draft'"/>
+                            <field name="quantity" readonly="state != 'draft'"/>
+                            <field name="unit" readonly="state != 'draft'"/>
+                            <field name="priority" widget="priority" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Dates &amp; Timeline">
+                            <field name="rfq_date" readonly="state != 'draft'"/>
+                            <field name="delivery_date" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" placeholder="Add detailed product description or technical specifications..." readonly="state != 'draft'"/>
+                        </page>
+                        <page string="Target Vendors">
+                            <field name="vendor_ids" widget="many2many_tags" placeholder="Select multiple vendors..." readonly="state != 'draft'"/>
+                        </page>
+                        <page string="Approval Flow">
+                            <group>
+                                <field name="approver_id"/>
+                                <field name="approval_comments" readonly="state != 'to_approve'"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_vendor_bridge_rfq_search" model="ir.ui.view">
+        <field name="name">vendor.bridge.rfq.search</field>
+        <field name="model">vendor.bridge.rfq</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="product_name"/>
+                <field name="vendor_ids"/>
+                <separator/>
+                <filter string="Draft" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Pending Approval" name="filter_to_approve" domain="[('state', '=', 'to_approve')]"/>
+                <filter string="Approved" name="filter_approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Sent to Vendors" name="filter_sent" domain="[('state', '=', 'sent')]"/>
+                <filter string="Done" name="filter_done" domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Product" name="group_product" context="{'group_by': 'product_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_vendor_bridge_rfq" model="ir.actions.act_window">
+        <field name="name">Requests for Quotation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">vendor.bridge.rfq</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_vendor_bridge_rfq_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first RFQ!
+            </p>
+            <p>
+                Send inquiries to multiple vendors and collect their pricing quotes.
+            </p>
+        </field>
+    </record>
+</odoo>
