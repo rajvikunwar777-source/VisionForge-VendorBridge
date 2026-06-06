@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_vendor_bridge_po_tree" model="ir.ui.view">
+        <field name="name">vendor.bridge.po.tree</field>
+        <field name="model">vendor.bridge.po</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-warning="state == 'to_approve'" decoration-success="state in ('confirmed', 'done')" decoration-danger="state == 'rejected'">
+                <field name="name"/>
+                <field name="vendor_id"/>
+                <field name="rfq_id"/>
+                <field name="product_name"/>
+                <field name="amount_total" sum="Total PO Amount"/>
+                <field name="order_date"/>
+                <field name="expected_delivery"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'draft'" 
+                       decoration-warning="state == 'to_approve'" 
+                       decoration-success="state in ('approved', 'confirmed', 'done')" 
+                       decoration-danger="state == 'rejected'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_vendor_bridge_po_form" model="ir.ui.view">
+        <field name="name">vendor.bridge.po.form</field>
+        <field name="model">vendor.bridge.po</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_approval" string="Submit for Approval" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    
+                    <!-- Approver actions: Restricted to Manager group -->
+                    <button name="action_approve" string="Approve" type="object" class="btn-success" invisible="state != 'to_approve'" groups="vendor_bridge.group_vendor_bridge_manager"/>
+                    <button name="action_reject" string="Reject" type="object" class="btn-danger" invisible="state != 'to_approve'" groups="vendor_bridge.group_vendor_bridge_manager"/>
+                    
+                    <button name="action_confirm" string="Confirm Order" type="object" class="oe_highlight" invisible="state != 'approved'"/>
+                    <button name="action_done" string="Mark as Received / Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    
+                    <button name="action_set_draft" string="Reset to Draft" type="object" invisible="state not in ('rejected', 'cancel')"/>
+                    <button name="action_cancel" string="Cancel PO" type="object" invisible="state not in ('draft', 'to_approve', 'approved', 'confirmed')"/>
+                    
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,approved,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">Purchase Order</span>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Vendor &amp; Sourcing">
+                            <field name="vendor_id" readonly="state != 'draft'"/>
+                            <field name="rfq_id"/>
+                            <field name="quotation_id"/>
+                        </group>
+                        <group string="Dates &amp; Commercials">
+                            <field name="order_date" readonly="state != 'draft'"/>
+                            <field name="expected_delivery" readonly="state != 'draft'"/>
+                            <field name="amount_total" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Product details (from RFQ)">
+                        <group>
+                            <field name="product_name"/>
+                        </group>
+                        <group>
+                            <field name="quantity"/>
+                            <field name="unit"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Approval Flow">
+                            <group>
+                                <field name="approver_id"/>
+                                <field name="approval_comments" readonly="state != 'to_approve'"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_vendor_bridge_po_search" model="ir.ui.view">
+        <field name="name">vendor.bridge.po.search</field>
+        <field name="model">vendor.bridge.po</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="vendor_id"/>
+                <field name="rfq_id"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Pending Approval" name="to_approve" domain="[('state', '=', 'to_approve')]"/>
+                <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Vendor" name="group_vendor" context="{'group_by': 'vendor_id'}"/>
+                    <filter string="RFQ" name="group_rfq" context="{'group_by': 'rfq_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_vendor_bridge_po" model="ir.actions.act_window">
+        <field name="name">Purchase Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">vendor.bridge.po</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_vendor_bridge_po_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a Purchase Order!
+            </p>
+            <p>
+                Manage procurement orders, track order confirmation, and expected delivery milestones.
+            </p>
+        </field>
+    </record>
+</odoo>
