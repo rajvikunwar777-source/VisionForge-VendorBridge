@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Vendor -->
+        <record id="seq_vendor_bridge_vendor" model="ir.sequence">
+            <field name="name">Vendor Code Sequence</field>
+            <field name="code">vendor.bridge.vendor</field>
+            <field name="prefix">VEND</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for RFQ -->
+        <record id="seq_vendor_bridge_rfq" model="ir.sequence">
+            <field name="name">RFQ Code Sequence</field>
+            <field name="code">vendor.bridge.rfq</field>
+            <field name="prefix">RFQ</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Quotation -->
+        <record id="seq_vendor_bridge_quotation" model="ir.sequence">
+            <field name="name">Quotation Code Sequence</field>
+            <field name="code">vendor.bridge.quotation</field>
+            <field name="prefix">QT</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for PO -->
+        <record id="seq_vendor_bridge_po" model="ir.sequence">
+            <field name="name">Purchase Order Sequence</field>
+            <field name="code">vendor.bridge.po</field>
+            <field name="prefix">PO</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>
