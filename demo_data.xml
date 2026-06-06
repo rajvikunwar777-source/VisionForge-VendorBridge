@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Demo Vendors -->
+        <record id="vendor_acme" model="vendor.bridge.vendor">
+            <field name="name">Acme Corporation</field>
+            <field name="contact_person">John Doe</field>
+            <field name="email">john.doe@acme.com</field>
+            <field name="phone">+1-555-0199</field>
+            <field name="address">123 Industrial Way, Tech City</field>
+            <field name="gst_number">29AAAAA1111A1Z1</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="vendor_globex" model="vendor.bridge.vendor">
+            <field name="name">Globex Corporation</field>
+            <field name="contact_person">Hank Scorpio</field>
+            <field name="email">hscorpio@globex.com</field>
+            <field name="phone">+1-555-0200</field>
+            <field name="address">456 Cypress Creek Rd, Mountain View</field>
+            <field name="gst_number">29BBBBB2222B2Z2</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Demo RFQ -->
+        <record id="rfq_demo_1" model="vendor.bridge.rfq">
+            <field name="rfq_date" eval="datetime.now().date()"/>
+            <field name="delivery_date" eval="(datetime.now() + timedelta(days=14)).date()"/>
+            <field name="product_name">High-Performance Laptop</field>
+            <field name="description">Laptops for the development team. Core i9, 32GB RAM, 1TB SSD.</field>
+            <field name="quantity">10</field>
+            <field name="unit">unit</field>
+            <field name="priority">2</field>
+            <field name="vendor_ids" eval="[(4, ref('vendor_acme')), (4, ref('vendor_globex'))]"/>
+            <field name="state">approved</field>
+        </record>
+
+        <!-- Demo Quotations -->
+        <record id="quote_demo_acme" model="vendor.bridge.quotation">
+            <field name="vendor_id" ref="vendor_acme"/>
+            <field name="rfq_id" ref="rfq_demo_1"/>
+            <field name="price_unit">1200.0</field>
+            <field name="tax_percent">18.0</field>
+            <field name="discount">5.0</field>
+            <field name="delivery_time">10</field>
+            <field name="warranty">3 Years Manufacturer Warranty</field>
+            <field name="state">submitted</field>
+        </record>
+
+        <record id="quote_demo_globex" model="vendor.bridge.quotation">
+            <field name="vendor_id" ref="vendor_globex"/>
+            <field name="rfq_id" ref="rfq_demo_1"/>
+            <field name="price_unit">1250.0</field>
+            <field name="tax_percent">18.0</field>
+            <field name="discount">7.0</field>
+            <field name="delivery_time">5</field>
+            <field name="warranty">2 Years Premium Support</field>
+            <field name="state">submitted</field>
+        </record>
+    </data>
+</odoo>
